@@ -1,13 +1,40 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
+// Load background image
+const backgroundImage = new Image();
+backgroundImage.src = 'asset/bg.png'; // Replace with the path to your background image
+backgroundImage.onload = () => {
+    console.log('Background image loaded successfully');
+    resizeCanvas(); // Ensure canvas is resized after the image is loaded
+    updateGame(); // Start the game loop after the image is loaded
+};
+backgroundImage.onerror = () => console.error('Error loading background image');
+
 // Adjust canvas size to fit the window
 function resizeCanvas() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+    drawBackground(); // Call drawBackground to render the background image
 }
+
+// Draw background image with fixed aspect ratio
+function drawBackground() {
+    const aspectRatio = backgroundImage.width / backgroundImage.height;
+    let drawHeight = canvas.height;
+    let drawWidth = canvas.height * aspectRatio;
+
+    const offsetX = (canvas.width - drawWidth) / 2;
+    // const offsetY = (canvas.height - drawHeight) / 2;
+    ctx.drawImage(backgroundImage, offsetX, 0, drawWidth, drawHeight);
+    console.log('draw height:', drawHeight);
+    console.log('draw width:', drawWidth);
+    console.log('offset x:', offsetX);
+    console.log('canvas width:', canvas.width);
+    console.log('canvas height:', canvas.height);
+}
+
 window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
 
 // Game variables
 let trainPosition = 0;
@@ -16,7 +43,7 @@ let teddyBearPositions = [];
 let score = 0;
 let trainLength = 5000; // Total length of the train in pixels
 let trainHeight = 150; // Height of the train
-let trainTop = canvas.height * 3 / 5; // Top position of the train
+let trainTop = canvas.height*3; // Top position of the train
 
 // Create random teddy bears on the train
 function createTeddyBears() {
@@ -32,9 +59,11 @@ createTeddyBears();
 
 const teddyBearImage = new Image();
 teddyBearImage.src = 'asset/bear.png'; // Replace with the actual path to your teddy bear image
+
 // Draw the train and teddy bears
 function drawGame() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawBackground(); // Draw the background image
 
     // Draw the moving train (as a simple rectangle for now)
     ctx.fillStyle = 'brown';
@@ -96,6 +125,3 @@ function handleTouchOrClick(event) {
         }
     });
 }
-
-// Start the game loop
-updateGame();
