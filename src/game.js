@@ -15,6 +15,8 @@ let trainSpeed = 2; // Adjust for faster or slower train movement
 let teddyBearPositions = [];
 let score = 0;
 let trainLength = 5000; // Total length of the train in pixels
+let trainHeight = 150; // Height of the train
+let trainTop = canvas.height * 3 / 5; // Top position of the train
 
 // Create random teddy bears on the train
 function createTeddyBears() {
@@ -22,29 +24,28 @@ function createTeddyBears() {
     for (let i = 0; i < numTeddyBears; i++) {
         teddyBearPositions.push({
             x: Math.random() * trainLength, // Random position along the train length
-            y: Math.random() * (canvas.height - 100) + 50, // Random position on the vertical axis
+            y: Math.random() * trainHeight + trainTop, // Random position on the vertical axis
         });
     }
 }
 createTeddyBears();
 
+const teddyBearImage = new Image();
+teddyBearImage.src = 'asset/bear.png'; // Replace with the actual path to your teddy bear image
 // Draw the train and teddy bears
 function drawGame() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // Draw the moving train (as a simple rectangle for now)
     ctx.fillStyle = 'brown';
-    ctx.fillRect(-trainPosition, canvas.height / 2 - 25, trainLength, 50);
+    ctx.fillRect(-trainPosition, trainTop, trainLength, trainHeight);
 
     // Draw teddy bears on the train
-    teddyBearPositions.forEach((teddy, index) => {
+    teddyBearPositions.forEach((teddy) => {
         const teddyX = teddy.x - trainPosition;
         if (teddyX > 0 && teddyX < canvas.width) {
             // Draw teddy bear if it's in the visible part of the train
-            ctx.fillStyle = 'pink';
-            ctx.beginPath();
-            ctx.arc(teddyX, teddy.y, 15, 0, 2 * Math.PI); // Draw a circle as a teddy bear
-            ctx.fill();
+            ctx.drawImage(teddyBearImage, teddyX - 15, teddy.y - 15, 30, 30);
         }
     });
 
